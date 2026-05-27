@@ -16,7 +16,8 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.wiremock:wiremock-standalone:3.5.4")
+    testImplementation("org.wiremock:wiremock-standalone:3.13.2")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 }
 
 tasks.test {
