@@ -1,8 +1,8 @@
-package com.github.wheezybaton.dto;
+package com.github.wheezybaton;
 
 import java.util.List;
 
-public record RepositoryResponse(
+record RepositoryResponse(
         String repositoryName,
         String ownerLogin,
         List<BranchResponse> branches

@@ -1,9 +1,5 @@
-package com.github.wheezybaton.service;
+package com.github.wheezybaton;
 
-import com.github.wheezybaton.dto.RepositoryResponse;
-import com.github.wheezybaton.dto.BranchResponse;
-import com.github.wheezybaton.dto.github.GitHubRepo;
-import com.github.wheezybaton.dto.github.GitHubBranch;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -12,19 +8,19 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class GitHubService {
+class GitHubService {
 
     private final RestClient restClient;
 
-    public GitHubService(RestClient.Builder restClientBuilder,
-                         @Value("${github.api.url:https://api.github.com}") String baseUrl) {
+    GitHubService(RestClient.Builder restClientBuilder,
+                  @Value("${github.api.url:https://api.github.com}") String baseUrl) {
         this.restClient = restClientBuilder
                 .baseUrl(baseUrl)
                 .defaultHeader("Accept", "application/vnd.github.v3+json")
                 .build();
     }
 
-    public List<RepositoryResponse> getUserRepositories(String username) {
+    List<RepositoryResponse> getUserRepositories(String username) {
         GitHubRepo[] repos = restClient.get()
                 .uri("/users/{username}/repos", username)
                 .retrieve()
