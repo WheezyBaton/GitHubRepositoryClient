@@ -102,6 +102,9 @@ class GitHubControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].branches[0].lastCommitSha", is("abc123sha")))
                 .andExpect(jsonPath("$[0].branches[1].name", is("dev")))
                 .andExpect(jsonPath("$[0].branches[1].lastCommitSha", is("def456sha")));
+
+        verify(1, getRequestedFor(urlEqualTo("/users/" + username + "/repos")));
+        verify(1, getRequestedFor(urlEqualTo("/repos/" + username + "/own-repo/branches")));
     }
 
     /**
@@ -145,6 +148,8 @@ class GitHubControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(0)));
+
+        verify(0, getRequestedFor(urlMatching("/repos/" + username + "/.*/branches")));
     }
 
     /**
