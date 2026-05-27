@@ -1,4 +1,4 @@
-package com.github.wheezybaton.controller;
+package com.github.wheezybaton;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
