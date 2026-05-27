@@ -4,6 +4,7 @@ import com.github.wheezybaton.dto.RepositoryResponse;
 import com.github.wheezybaton.dto.BranchResponse;
 import com.github.wheezybaton.dto.github.GitHubRepo;
 import com.github.wheezybaton.dto.github.GitHubBranch;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -15,9 +16,10 @@ public class GitHubService {
 
     private final RestClient restClient;
 
-    public GitHubService(RestClient.Builder restClientBuilder) {
+    public GitHubService(RestClient.Builder restClientBuilder,
+                         @Value("${github.api.url:https://api.github.com}") String baseUrl) {
         this.restClient = restClientBuilder
-                .baseUrl("https://api.github.com")
+                .baseUrl(baseUrl)
                 .defaultHeader("Accept", "application/vnd.github.v3+json")
                 .build();
     }
