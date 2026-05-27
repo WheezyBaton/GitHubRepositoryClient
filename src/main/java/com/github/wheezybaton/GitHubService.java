@@ -1,51 +1,32 @@
 package com.github.wheezybaton;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 class GitHubService {
 
-    private final RestClient restClient;
+    private final GitHubClient gitHubClient;
 
-    GitHubService(RestClient.Builder restClientBuilder,
-                  @Value("${github.api.url:https://api.github.com}") String baseUrl) {
-        this.restClient = restClientBuilder
-                .baseUrl(baseUrl)
-                .defaultHeader("Accept", "application/vnd.github.v3+json")
-                .build();
+    GitHubService(GitHubClient gitHubClient) {
+        this.gitHubClient = gitHubClient;
     }
 
     List<RepositoryResponse> getUserRepositories(String username) {
-        GitHubRepo[] repos = restClient.get()
-                .uri("/users/{username}/repos", username)
-                .retrieve()
-                .body(GitHubRepo[].class);
+        List<GitHubRepo> repos = gitHubClient.fetchUserRepositories(username);
 
-        if (repos == null) return List.of();
-
-        return Arrays.stream(repos)
+        return repos.stream()
                 .filter(repo -> !repo.fork())
                 .map(repo -> {
-                    List<BranchResponse> branches = getBranches(username, repo.name());
+                    List<BranchResponse> branches = getMappedBranches(username, repo.name());
                     return new RepositoryResponse(repo.name(), repo.owner().login(), branches);
                 })
                 .toList();
     }
 
-    private List<BranchResponse> getBranches(String username, String repoName) {
-        GitHubBranch[] branches = restClient.get()
-                .uri("/repos/{owner}/{repo}/branches", username, repoName)
-                .retrieve()
-                .body(GitHubBranch[].class);
-
-        if (branches == null) return List.of();
-
-        return Arrays.stream(branches)
+    private List<BranchResponse> getMappedBranches(String username, String repoName) {
+        return gitHubClient.fetchBranches(username, repoName).stream()
                 .map(branch -> new BranchResponse(branch.name(), branch.commit().sha()))
                 .toList();
     }
